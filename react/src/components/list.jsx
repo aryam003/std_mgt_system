@@ -1,5 +1,7 @@
 import { useEffect,useState } from "react"
 import axios from 'axios'
+
+
 function List(){
     const [data,setData]=useState([])
     const [Editing,setEditing]=useState(false)
@@ -23,9 +25,15 @@ function List(){
         }).catch(error=>console.log(error.message))
     }
 
+    const Delete_dtls=(id)=>{
+        axios.delete(`http://127.0.0.1:8000/api/todo/${id}/`).then(res=>{
+            setData(data.filter((task)=>task.id!=id))
+        }).catch(error=>console.log(error.message))
+    }
+
     return(
         <div className="container">
-            <h1>Diaplay Details</h1>
+            <h1>Student Details</h1>
             <table className="table">
                 <thead>
                     <tr>
@@ -43,11 +51,9 @@ function List(){
                             <td>{value.email}</td>
                             <td>{value.ph_no}</td>
                             <td><button className="btn btn-outline-info" onClick={()=>{Edit_dtls(value)}}>Edit</button></td>
-                            <td><button className="btn btn-outline-danger" onClick={()=>{}}>Delete</button></td>
-
+                            <td><button className="btn btn-outline-danger" onClick={()=>{Delete_dtls(value.id)}}>Delete</button></td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
             {Editing ? <EditForm curTask={Editdata} updatefun={updateDtls}/>:null}
@@ -72,7 +78,6 @@ const EditForm=({curTask,updatefun})=>{
             <input type="text" name="email" id="email" value={task.email} onChange={handleChange} />
             <input type="text" name="ph_no" id="ph_no" value={task.ph_no} onChange={handleChange} />
             <input type="submit" value="Update" />
-
         </form>
     )
 }
